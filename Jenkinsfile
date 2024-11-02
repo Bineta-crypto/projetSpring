@@ -1,34 +1,27 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.5-jdk-11' // Utilise une image Docker avec Maven et Java
+            args '-v /var/jenkins_home/.m2:/root/.m2' // Cache le répertoire Maven local
+        }
+    }
+
     stages {
         stage('Build') {
             steps {
-                script {
-                    sh 'mvn clean package' // Construire l'application
-                }
+                sh 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                script {
-                    sh 'mvn test' // Exécuter les tests
-                }
+                sh 'mvn test'
             }
         }
-        stage('Deploy') {
+        stage('Package') {
             steps {
-                script {
-                    sh 'java -jar target/demo-0.0.1-SNAPSHOT.jar' // Déployer l'application
-                }
+                sh 'mvn package'
+                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
             }
-        }
-    }
-    post {
-        success {
-            echo 'Pipeline exécuté avec succès!'
-        }
-        failure {
-            echo 'Échec du pipeline!'
         }
     }
 }
