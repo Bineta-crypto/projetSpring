@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.9.9-jdk-9.0.4' // Utilise une image Docker avec Maven et Java
+            image 'maven:3.9.9-jdk-9' // Utilise une image Docker avec Maven et Java
             args '-v /var/jenkins_home/.m2:/root/.m2' // Cache le répertoire Maven local
         }
     }
